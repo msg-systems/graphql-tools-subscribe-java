@@ -1,0 +1,16 @@
+{
+  "groups": [
+    {
+      "name": "graphqlio.toolssubscribe",
+      "type": "com.thinkenterprise.graphqlio.server.gts.autoconfiguration.GtsProperties",
+      "sourceType": "com.thinkenterprise.graphqlio.server.gts.autoconfiguration.GtsProperties"
+    },
+    {
+      "name": "graphqlio.toolssubscribe",
+      "type": "com.thinkenterprise.graphqlio.server.gts.autoconfiguration.GtsAutoConfiguration",
+      "sourceType": "com.thinkenterprise.graphqlio.server.gts.autoconfiguration.GtsAutoConfiguration"
+    }
+  ],
+  "properties": [],
+  "hints": []
+}
