@@ -62,12 +62,12 @@ public class GtsKeyValueStore {
 
 	public void start() throws IOException {
 		
-		deleteAllKeys();
-		
 		if (gtsProperties.getUseEmbeddedRedis()) {
 			gtsEmbeddedService.start();
 		}
 		
+		deleteAllKeys();
+				
 	}
 	
 	public void stop() {

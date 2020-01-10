@@ -3,9 +3,7 @@ package com.thinkenterprise.gts.evaluation;
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.thinkenterprise.gts.evaluation.GtsEvaluation;
-import com.thinkenterprise.gts.keyvaluestore.GtsGraphQLEmbeddedRedisService;
 import com.thinkenterprise.gts.keyvaluestore.GtsKeyValueStore;
 import com.thinkenterprise.gts.tracking.GtsRecord;
 import com.thinkenterprise.gts.tracking.GtsScope;
@@ -32,22 +29,7 @@ public class TestGraphQLIOEvaluation {
 
     @Autowired
     private GtsKeyValueStore keyval;
-	
-	@Autowired
-	GtsGraphQLEmbeddedRedisService redisService;
-	
-	@BeforeEach
-	public void startRedis() throws IOException {
-		this.redisService.start();
-	}
-
-	@AfterEach
-	public void stopRedis() {
-		this.redisService.stop();
-	}
-    
-    
-    
+		    
     @Autowired
 	GtsEvaluation graphQLIOEvaluation;
 	
@@ -96,7 +78,7 @@ public class TestGraphQLIOEvaluation {
 	
 	
 	@Test
-	public void testMutationUpdateItemOutdatesScopeUseCase1() {
+	public void testMutationUpdateItemOutdatesScopeUseCase1() throws IOException {
 
         /*
          * CASE 1: modified entity (of arbitrary direct access) old/query:
@@ -104,6 +86,7 @@ public class TestGraphQLIOEvaluation {
          * [*#{*}.*->]update/delete(*)->Item#{1}.{name}
          */
 		
+		keyval.start();
 		
 		List<String> outdatedSids = null;		
 
@@ -132,11 +115,15 @@ public class TestGraphQLIOEvaluation {
 		outdatedSids = graphQLIOEvaluation.evaluateOutdatedSids(scopeSid2Cid1);
 		Assertions.assertTrue(outdatedSids.size() == 1);
 		Assertions.assertTrue(outdatedSids.contains("Sid1")); 	
+		
+		keyval.stop();
+		
+		
 	}
 
 	
 	@Test
-	public void testMutationUpdateCardOutdatesScopeUseCase2() {
+	public void testMutationUpdateCardOutdatesScopeUseCase2() throws IOException {
 
         /*
          * CASE 2: modified entity list (of relationship traversal) old/query
@@ -144,6 +131,8 @@ public class TestGraphQLIOEvaluation {
          * [*#{*}.*->]update(*)->Card#{1}.{items}
          */
 				
+		keyval.start();
+
 		List<String> outdatedSids = null;		
 		
 		///  need to add Query Records !!! withQuery adds query sent by client. 
@@ -167,10 +156,12 @@ public class TestGraphQLIOEvaluation {
 		Assertions.assertTrue(outdatedSids.size() == 1);
 		Assertions.assertTrue(outdatedSids.contains("Sid3"));	
 		
+		keyval.stop();
+
 	}	
 	
 	@Test
-	public void testMutationDeleteItemOutdatesScopeUseCase3() {
+	public void testMutationDeleteItemOutdatesScopeUseCase3() throws IOException {
 		
         /*
          * CASE 3: modified entity list (of direct query) old/query
@@ -179,6 +170,9 @@ public class TestGraphQLIOEvaluation {
          * 
          * "Read:Many", "Delete:Attr=*
          */		
+		
+		keyval.start();
+		
 		
 		List<String> outdatedSids = null;		
 		
@@ -209,10 +203,14 @@ public class TestGraphQLIOEvaluation {
 		Assertions.assertTrue(outdatedSids.contains("Sid1"));
 		Assertions.assertTrue(outdatedSids.contains("Sid2"));
 		
+		keyval.stop();
+		
 	}
 	
 	@Test
-	public void testMutationUpdateItemOutdatesScopeUseCase3() {
+	public void testMutationUpdateItemOutdatesScopeUseCase3() throws IOException {
+		
+		keyval.start();
 		
         /*
          * CASE 3: modified entity list (of direct query) old/query
@@ -251,6 +249,9 @@ public class TestGraphQLIOEvaluation {
 		outdatedSids = graphQLIOEvaluation.evaluateOutdatedSids(scopeSid2Cid1);
 		Assertions.assertTrue(outdatedSids.size() == 1);
 		Assertions.assertTrue(outdatedSids.contains("Sid1"));
+		
+		keyval.stop();
+		
 	}
 	
 

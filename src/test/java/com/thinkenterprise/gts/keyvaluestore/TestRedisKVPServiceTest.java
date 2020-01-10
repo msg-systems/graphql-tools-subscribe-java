@@ -28,9 +28,7 @@ package com.thinkenterprise.gts.keyvaluestore;
 import java.io.IOException;
 import java.util.Set;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -59,23 +57,12 @@ public class TestRedisKVPServiceTest {
 	@Autowired
 	GtsKeyValueStore	kvp;
 
-	@Autowired
-	GtsGraphQLEmbeddedRedisService redisService;
-	
-	@BeforeEach
-	public void startRedis() throws IOException {
-		this.redisService.start();
-	}
-
-	@AfterEach
-	public void stopRedis() {
-		this.redisService.stop();
-	}
-	
 	@Test
-    public void testKVP() {
+    public void testKVP() throws IOException {
 		
 		Set<String> allKeys = null;
+		
+		kvp.start();
 		
 		/// reset kvp by deleting all keys
 		kvp.getAllKeys().forEach((key) -> kvp.getRedisTemplate().delete(key));
@@ -110,6 +97,8 @@ public class TestRedisKVPServiceTest {
         kvp.delete("cid1", "sid2");
         kvp.delete("cid2", "sid3");
         kvp.delete("cid2", "sid4");
+        
+        kvp.stop();
 	
 	}
 	
