@@ -26,6 +26,7 @@
  ******************************************************************************/
 package com.thinkenterprise.gts.autoconfiguration;
 
+import org.springframework.beans.factory.annotation.Value;
 /**
  * Class to provide graphqlio.server Configuration properties 
  *
@@ -40,4 +41,37 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "graphqlio.toolssubscribe")
 public class GtsProperties {
 
+	@Value("${spring.redis.port}")
+	private int redisPort;
+
+	@Value("${spring.redis.host}")
+	private String redisHost;
+	
+	private boolean useEmbeddedRedis = false;
+
+	public int getRedisPort() {
+		return redisPort;
+	}
+
+	public void setRedisPort(int redisPort) {
+		this.redisPort = redisPort;
+	}
+
+	public String getRedisHost() {
+		return redisHost;
+	}
+
+	public void setRedisHost(String redisHost) {
+		this.redisHost = redisHost;
+	}
+	
+	public void setUseEmbeddedRedis(boolean useEmbeddedRedis) {
+		this.useEmbeddedRedis = useEmbeddedRedis;
+	}
+
+	public boolean getUseEmbeddedRedis() {
+		return useEmbeddedRedis;
+	}
+	
+	
 }

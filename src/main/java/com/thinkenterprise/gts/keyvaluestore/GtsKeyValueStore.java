@@ -26,11 +26,15 @@
  ******************************************************************************/
 package com.thinkenterprise.gts.keyvaluestore;
 
+import java.io.IOException;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
+
+import com.thinkenterprise.gts.autoconfiguration.GtsProperties;
 
 
 /**
@@ -44,11 +48,35 @@ import org.springframework.stereotype.Component;
 @Component
 public class GtsKeyValueStore {
 
-	private RedisTemplate<String, String> redisTemplate;
+	@Autowired
+	private GtsProperties gtsProperties;
+	
+	@Autowired
+	GtsGraphQLEmbeddedRedisService	gtsEmbeddedService;
+		
+	RedisTemplate<String, String> redisTemplate;
 	
 	public GtsKeyValueStore( RedisTemplate<String, String> redisTemplate) {
 		this.redisTemplate = redisTemplate;
 	}
+
+	public void start() throws IOException {
+		
+		deleteAllKeys();
+		
+		if (gtsProperties.getUseEmbeddedRedis()) {
+			gtsEmbeddedService.start();
+		}
+		
+	}
+	
+	public void stop() {
+		if (gtsProperties.getUseEmbeddedRedis()) {
+			gtsEmbeddedService.stop();
+		}
+		
+	}
+	
 	
 	public RedisTemplate<String, String> getRedisTemplate() {return redisTemplate; }
 	

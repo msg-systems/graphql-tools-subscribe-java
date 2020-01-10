@@ -38,7 +38,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.thinkenterprise.gts.keyvaluestore.GtsGraphQLRedisService;
 import com.thinkenterprise.gts.keyvaluestore.GtsKeyValueStore;
 
 /**
@@ -61,7 +60,7 @@ public class TestRedisKVPServiceTest {
 	GtsKeyValueStore	kvp;
 
 	@Autowired
-	GtsGraphQLRedisService redisService;
+	GtsGraphQLEmbeddedRedisService redisService;
 	
 	@BeforeEach
 	public void startRedis() throws IOException {

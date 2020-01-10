@@ -32,6 +32,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import com.thinkenterprise.gts.autoconfiguration.GtsProperties;
+
 import redis.embedded.RedisServer;
 
 /**
@@ -44,24 +46,24 @@ import redis.embedded.RedisServer;
  */
 
 @Service
-@Scope("singleton")
-public class GtsGraphQLRedisService {
+public class GtsGraphQLEmbeddedRedisService {
 
 	final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger();
 
 	@Autowired
-	private RedisProperties redisProperties;
+	private GtsProperties gtsProperties;
 
 	private RedisServer embeddedRedisServer;
 
 	public void start() throws IOException {
+		
 		log.info("Starting embedded RedisServer.");
 
 		// this.embeddedRedisServer = new RedisServer(redisProperties.getRedisPort());
 
 		this.embeddedRedisServer = RedisServer
 				.builder()
-				.port(redisProperties
+				.port(gtsProperties
 						.getRedisPort())
 				// .redisExecProvider(customRedisExec) //com.github.kstyrc (not
 				// com.orange.redis-embedded)

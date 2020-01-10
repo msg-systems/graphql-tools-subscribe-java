@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.thinkenterprise.gts.evaluation.GtsEvaluation;
-import com.thinkenterprise.gts.keyvaluestore.GtsGraphQLRedisService;
+import com.thinkenterprise.gts.keyvaluestore.GtsGraphQLEmbeddedRedisService;
 import com.thinkenterprise.gts.keyvaluestore.GtsKeyValueStore;
 import com.thinkenterprise.gts.tracking.GtsRecord;
 import com.thinkenterprise.gts.tracking.GtsScope;
@@ -34,7 +34,7 @@ public class TestGraphQLIOEvaluation {
     private GtsKeyValueStore keyval;
 	
 	@Autowired
-	GtsGraphQLRedisService redisService;
+	GtsGraphQLEmbeddedRedisService redisService;
 	
 	@BeforeEach
 	public void startRedis() throws IOException {
