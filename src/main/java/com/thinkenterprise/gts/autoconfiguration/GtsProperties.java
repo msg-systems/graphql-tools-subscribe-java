@@ -26,6 +26,9 @@
  ******************************************************************************/
 package com.thinkenterprise.gts.autoconfiguration;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Value;
 /**
  * Class to provide graphqlio.server Configuration properties 
@@ -34,13 +37,19 @@ import org.springframework.beans.factory.annotation.Value;
  */
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
+
 
 @Component
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "graphqlio.toolssubscribe")
 public class GtsProperties {
 
+	private static String GtsGraphQLIOSchemaFilePath = "schema-graphqlio.graphqls";
+
+	
 	@Value("${spring.redis.port}")
 	private int redisPort;
 
@@ -73,5 +82,17 @@ public class GtsProperties {
 		return useEmbeddedRedis;
 	}
 	
+	public Resource[] getSchemaResources() {
+		Resource[] resources = null;
+		
+		try {
+			PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+			resources = resolver.getResources("classpath*:" + GtsGraphQLIOSchemaFilePath);			   		
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return resources;
+	}
 	
 }
