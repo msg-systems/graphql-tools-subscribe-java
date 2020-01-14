@@ -6,7 +6,7 @@
 
 	<groupId>com.thinkenterprise</groupId>
 	<artifactId>graphql-tools-subscribe-java</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.9</version>
 	<packaging>jar</packaging>
 	<name>GraphQL Tools Subscribe</name>
 	<description>GraphQL Tools Subscribe</description>
@@ -63,7 +63,7 @@
 		<dependency>
 			<groupId>com.thinkenterprise</groupId>
 			<artifactId>pure-uuid-java</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.9</version>
 		</dependency>
 
 		<dependency>
