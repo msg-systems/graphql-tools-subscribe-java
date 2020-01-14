@@ -35,8 +35,28 @@ dependencies {
 
 
 # Sample 
-FIXME
 
+```java
+	@Autowired
+	GtsEvaluation graphQLIOEvaluation;
+
+	String strRecordQuerySid1 =
+			"read(many)->item{id1,id2,id3,id4,id5}.{id,name,address,email}";
+
+	GtsRecord recodRecordQuerySid1 =
+			GtsRecord.builder().stringified(strRecordQuerySid1).build();
+
+	GtsScope scopeSid1Cid1 =
+			GtsScope.builder().withScopeId("Sid1").withConnectionId("Cid1").withQuery(strRecordQuerySid1).withState(GtsScopeState.SUBSCRIBED).build();
+
+	scopeSid1Cid1.addRecord(recodRecordQuerySid1);
+
+	scopeSid1Cid1.addRecord(recordMutationUpdateItemInQuerySid1);
+
+	List<String> outdatedSids =
+			graphQLIOEvaluation.evaluateOutdatedSids(scopeSid1Cid1);
+
+```
 
 
 # License 
