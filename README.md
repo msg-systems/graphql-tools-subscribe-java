@@ -76,6 +76,26 @@ working with GtsEvaluation:
 ```
 
 
+working with GtsKeyValueStore:
+
+``` java
+	@Autowired
+	GtsKeyValueStore kvp;
+
+	kvp.start();
+
+	kvp.store("cid1", "sid1", "Value for <cid1,sid1>");
+	boolean bool = kvp.hasKey("cid1", "sid1");
+	String value = kvp.get("cid1", "sid1");
+	Set<String> allKeys = kvp.getAllKeys();
+	Set<String> allKeysCid = kvp.getAllKeysForConnection("cid1");
+	Set<String> allKeysSid = kvp.getAllKeysForScope("sid1");
+	kvp.delete("cid1", "sid1");
+
+	kvp.stop();
+```
+
+
 # License 
 Design and Development by msg Applied Technology Research
 Copyright (c) 2019-2020 msg systems ag (http://www.msg-systems.com/)
