@@ -39,13 +39,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.thinkenterprise.gts.keyvaluestore.GtsKeyValueStore;
 
 /**
- * Class used to process any incoming message sent by clients via WebSocket
- * supports subprotocols (CBOR, MsgPack, Text)
- * triggers process to indicate outdating queries and notifies clients
+ * Class used for testing the keyvaluestore
  *
  * @author Michael Schäfer
  * @author Dr. Edgar Müller
- * @author Torsten Kühnert
  */
 
 @Tag("annotations")

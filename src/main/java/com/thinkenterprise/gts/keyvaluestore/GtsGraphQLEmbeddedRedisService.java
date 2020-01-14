@@ -29,7 +29,6 @@ package com.thinkenterprise.gts.keyvaluestore;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.thinkenterprise.gts.autoconfiguration.GtsProperties;
@@ -37,11 +36,13 @@ import com.thinkenterprise.gts.autoconfiguration.GtsProperties;
 import redis.embedded.RedisServer;
 
 /**
- * Class used to process any incoming message sent by clients via WebSocket
- * supports subprotocols (CBOR, MsgPack, Text)
- * triggers process to indicate outdating queries and notifies clients
+ * Class used for supporting an embedded redis server
+ * 
+ * user can activate it by setting property
+ * graphqlio.toolssubscribe.useEmbeddedRedis to true
  *
  * @author Michael Schäfer
+ * @author Dr. Edgar Müller
  * @author Torsten Kühnert
  */
 
@@ -56,15 +57,12 @@ public class GtsGraphQLEmbeddedRedisService {
 	private RedisServer embeddedRedisServer;
 
 	public void start() throws IOException {
-		
+
 		log.info("Starting embedded RedisServer.");
 
 		// this.embeddedRedisServer = new RedisServer(redisProperties.getRedisPort());
 
-		this.embeddedRedisServer = RedisServer
-				.builder()
-				.port(gtsProperties
-						.getRedisPort())
+		this.embeddedRedisServer = RedisServer.builder().port(gtsProperties.getRedisPort())
 				// .redisExecProvider(customRedisExec) //com.github.kstyrc (not
 				// com.orange.redis-embedded)
 				.setting("maxmemory 128M") // maxheap 128M
