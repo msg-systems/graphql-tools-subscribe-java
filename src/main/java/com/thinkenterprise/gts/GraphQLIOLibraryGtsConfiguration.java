@@ -26,8 +26,6 @@
  ******************************************************************************/
 package com.thinkenterprise.gts;
 
-
-
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
@@ -35,16 +33,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Class for library module configuration
+ *
+ * @author Michael Schäfer
+ * @author Dr. Edgar Müller
+ */
+
 @Configuration
 @ComponentScan(basePackageClasses = GraphQLIOLibraryGtsConfiguration.class)
 public class GraphQLIOLibraryGtsConfiguration {
 
-	
-	  private static final Logger logger = LoggerFactory.getLogger(GraphQLIOLibraryGtsConfiguration.class);
+	private static final Logger logger = LoggerFactory.getLogger(GraphQLIOLibraryGtsConfiguration.class);
 
-	  @PostConstruct
-	  public void postConstruct(){
-	    logger.info("GraphQLIOLIbrary GTS Module Loaded!");
-	  }
+	@PostConstruct
+	public void postConstruct() {
+		logger.info("GraphQLIOLIbrary GTS Module Loaded!");
+	}
 }
-

@@ -26,6 +26,12 @@
  ******************************************************************************/
 package com.thinkenterprise.gts.resolver;
 
+/**
+ * class GtsSubscription
+ *
+ * @author Michael Schäfer
+ */
+
 public class GtsSubscription {
 
 }

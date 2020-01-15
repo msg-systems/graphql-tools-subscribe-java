@@ -26,7 +26,6 @@
  ******************************************************************************/
 package com.thinkenterprise.gts.autoconfiguration;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +40,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
 
+/**
+ * Class to provide graphqlio.server Configuration properties
+ *
+ * @author Michael Schäfer
+ */
 
 @Component
 @EnableConfigurationProperties
@@ -49,13 +53,12 @@ public class GtsProperties {
 
 	private static String GtsGraphQLIOSchemaFilePath = "schema-graphqlio.graphqls";
 
-	
 	@Value("${spring.redis.port}")
 	private int redisPort;
 
 	@Value("${spring.redis.host}")
 	private String redisHost;
-	
+
 	private boolean useEmbeddedRedis = false;
 
 	public int getRedisPort() {
@@ -73,7 +76,7 @@ public class GtsProperties {
 	public void setRedisHost(String redisHost) {
 		this.redisHost = redisHost;
 	}
-	
+
 	public void setUseEmbeddedRedis(boolean useEmbeddedRedis) {
 		this.useEmbeddedRedis = useEmbeddedRedis;
 	}
@@ -81,18 +84,18 @@ public class GtsProperties {
 	public boolean getUseEmbeddedRedis() {
 		return useEmbeddedRedis;
 	}
-	
+
 	public Resource[] getSchemaResources() {
 		Resource[] resources = null;
-		
+
 		try {
 			PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-			resources = resolver.getResources("classpath*:" + GtsGraphQLIOSchemaFilePath);			   		
+			resources = resolver.getResources("classpath*:" + GtsGraphQLIOSchemaFilePath);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return resources;
 	}
-	
+
 }
