@@ -85,7 +85,7 @@ public class TestGraphQLIOEvaluation {
          * [*#{*}.*->]read(*)->Item#{1}.{id,name} new/mutation:
          * [*#{*}.*->]update/delete(*)->Item#{1}.{name}
          */
-		keyval.setUseEmbeddedRedis(true);
+		
 		keyval.start();
 		
 		List<String> outdatedSids = null;		
@@ -131,7 +131,6 @@ public class TestGraphQLIOEvaluation {
          * [*#{*}.*->]update(*)->Card#{1}.{items}
          */
 				
-		keyval.setUseEmbeddedRedis(true);
 		keyval.start();
 
 		List<String> outdatedSids = null;		
@@ -172,7 +171,6 @@ public class TestGraphQLIOEvaluation {
          * "Read:Many", "Delete:Attr=*
          */		
 		
-		keyval.setUseEmbeddedRedis(true);
 		keyval.start();
 		
 		
@@ -212,7 +210,6 @@ public class TestGraphQLIOEvaluation {
 	@Test
 	public void testMutationUpdateItemOutdatesScopeUseCase3() throws IOException {
 		
-		keyval.setUseEmbeddedRedis(true);
 		keyval.start();
 		
         /*
