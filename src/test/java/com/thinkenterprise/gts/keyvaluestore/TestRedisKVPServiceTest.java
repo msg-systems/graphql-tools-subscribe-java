@@ -59,6 +59,7 @@ public class TestRedisKVPServiceTest {
 		
 		Set<String> allKeys = null;
 		
+		kvp.setUseEmbeddedRedis(true);
 		kvp.start();
 		
 		/// reset kvp by deleting all keys
