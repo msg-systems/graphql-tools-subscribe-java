@@ -20,6 +20,10 @@
 5. TestRedisKVPServiceTest Pure Java JUnit Test 5 Test & Naming Conventions & Discussion 
 6. TestGraphQLIOEvaluation Pure Java JUnit Test 5 Test & Naming Conventions & Discussion 
 7. TestPureUuidGenerator should be tested in the UUID Project 
+```
+-> no! this test includes GtsScope with internal builder and method generateUUID.
+-> pure-uuid-java is used, but this is no pure-uuid-java test i think. (tku)
+```
 8. TestGraphQLIOEvaluation Problem with Do you want the application "redis-server-2.8.19.app" to accept incoming network connections?
 9. Test Header Description of the most tests are not correct copy paste failures 
 10. TestRedisKVPServiceTest Poblem with Do you want the application "redis-server-2.8.19.app" to accept incoming network connections?
