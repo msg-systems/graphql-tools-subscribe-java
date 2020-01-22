@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.thinkenterprise</groupId>
+	<groupId>com.graphqlio</groupId>
 	<artifactId>graphql-tools-subscribe-java</artifactId>
 	<version>0.0.9</version>
 	<packaging>jar</packaging>
@@ -61,7 +61,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.thinkenterprise</groupId>
+			<groupId>com.graphqlio</groupId>
 			<artifactId>pure-uuid-java</artifactId>
 			<version>0.0.9</version>
 		</dependency>

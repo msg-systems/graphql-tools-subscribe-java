@@ -2,13 +2,13 @@
   "groups": [
     {
       "name": "graphqlio.toolssubscribe",
-      "type": "com.thinkenterprise.gts.autoconfiguration.GtsProperties",
-      "sourceType": "com.thinkenterprise.gts.autoconfiguration.GtsProperties"
+      "type": "com.graphqlio.gts.autoconfiguration.GtsProperties",
+      "sourceType": "com.graphqlio.gts.autoconfiguration.GtsProperties"
     },
     {
       "name": "graphqlio.toolssubscribe",
-      "type": "com.thinkenterprise.gts.autoconfiguration.GtsAutoConfiguration",
-      "sourceType": "com.thinkenterprise.gts.autoconfiguration.GtsAutoConfiguration"
+      "type": "com.graphqlio.gts.autoconfiguration.GtsAutoConfiguration",
+      "sourceType": "com.graphqlio.gts.autoconfiguration.GtsAutoConfiguration"
     }
   ],
   "properties": [],
