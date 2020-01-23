@@ -28,7 +28,7 @@ package com.graphqlio.gts.actuator;
 
 
 /**
- * GtsScopeState
+ * GtsCounterNames
  *
  * @author Michael Schäfer
  * @author Dr. Edgar Müller
