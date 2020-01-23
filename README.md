@@ -36,63 +36,64 @@ dependencies {
 
 # Sample 
 
-working with GtsRecord:
+Create a subscription - how to subscribe:
 
 ``` java
-		GtsRecord record = GtsRecord.builder().op(GtsOperationType.READ)
-				.arity(GtsArityType.ONE)
-				.dstType("dstType")
-				.dstIds(new String[] {"dstId1", "dstId2"})
-				.dstAttrs(new String[] {"dstAttr1", "dstAttr2"})
-				.build();
+String strRecordQuerySid1 = "read(many)->item#{id1,id2,id3,id4,id5}.{id,name,address,email}";
 
-		String strRecord = record.stringify();
-
-		GtsRecord recordFromString =
-				GtsRecord.builder().stringified(strRecord).build();
+GtsScope scopeSid1Cid1 = GtsScope.builder()
+	.withScopeId("Sid1")
+	.withConnectionId("Cid1")
+	.withQuery(strRecordQuerySid1)
+	.withState(GtsScopeState.SUBSCRIBED)
+	.build();
 ```
 
 
-working with GtsEvaluation:
+How to use GTSRecord:
 
 ``` java
-	@Autowired
-	GtsEvaluation graphQLIOEvaluation;
+String strRecordMutationUpdateItemInQuerySid1 = "update(one)->item#{id3}.{email}";
 
-	String strRecordQuerySid1 =
-			"read(many)->item{id1,id2,id3,id4,id5}.{id,name,address,email}";
-
-	GtsRecord recordRecordQuerySid1 =
-			GtsRecord.builder().stringified(strRecordQuerySid1).build();
-
-	GtsScope scopeSid1Cid1 =
-			GtsScope.builder().withScopeId("Sid1").withConnectionId("Cid1").withQuery(strRecordQuerySid1).withState(GtsScopeState.SUBSCRIBED).build();
-
-	scopeSid1Cid1.addRecord(recordRecordQuerySid1);
-	scopeSid1Cid1.addRecord(recordMutationUpdateItemInQuerySid1);
-
-	List<String> outdatedSids =
-			graphQLIOEvaluation.evaluateOutdatedSids(scopeSid1Cid1);
+// build two records
+GtsRecord recordRecordQuerySid1 = GtsRecord.builder()
+	.stringified(strRecordQuerySid1)
+	.build();
+GtsRecord recordMutationUpdateItemInQuerySid1 = GtsRecord.builder()
+	.stringified(strRecordMutationUpdateItemInQuerySid1)
+	.build();
 ```
 
 
-working with GtsKeyValueStore:
+Save records in store:
 
 ``` java
-	@Autowired
-	GtsKeyValueStore kvp;
+// add records to scope
+scopeSid1Cid1.addRecord(recordRecordQuerySid1);
+scopeSid1Cid1.addRecord(recordMutationUpdateItemInQuerySid1);
 
-	kvp.start();
+// transform records-string to String[]
+List<String> records1 = scopeSid1Cid1.getStringifiedRecords();
+String[] scopeRecords1 = records1.toArray(new String[records1.size()]);
 
-	kvp.store("cid1", "sid1", "Value for <cid1,sid1>");
-	boolean bool = kvp.hasKey("cid1", "sid1");
-	String value = kvp.get("cid1", "sid1");
-	Set<String> allKeys = kvp.getAllKeys();
-	Set<String> allKeysCid = kvp.getAllKeysForConnection("cid1");
-	Set<String> allKeysSid = kvp.getAllKeysForScope("sid1");
-	kvp.delete("cid1", "sid1");
+@Autowired
+private GtsKeyValueStore keyval;
 
-	kvp.stop();
+keyval.putRecords(scopeSid1Cid1.getConnectionId(), scopeSid1Cid1.getScopeId(), scopeRecords1);
+```
+
+
+Evaluation of results:
+
+``` java
+@Autowired
+private GtsEvaluation evaluation;
+
+// GtsScope scope
+List<String> sids = evaluation.evaluateOutdatedSids(scope);
+
+// Collection<GtsConnection> connecions
+Map<String, Set<String>> sids4cid = evaluation.evaluateOutdatedsSidsPerCid(sids, connecions);
 ```
 
 

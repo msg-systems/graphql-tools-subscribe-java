@@ -302,6 +302,14 @@ public class GtsEvaluation {
             throw new GtsScopeEvaluationException(String.format("Empty GtsRecord List found for connection id (%s) and scope id (%s)", connectionId, scopeId));
         }
 
+        /*
+         * ///////////////////////////////////////////
+         * Bei zwei Subscriptions wird im 1. Durchgang (sid1-cid1) recordsChecked auf true gesetzt.
+         * Im 2. Durchgang (sid2-cid1 oder sid1-cid2) wird dadurch nicht mehr in dieses if gesprungen.
+         * Ist das so gewünscht?
+         * Wieso der Aufwand mit recordsChecked?
+         * ///////////////////////////////////////////
+         */
         if (!recordsChecked) {
             List<GtsRecord> recordsRead = new ArrayList<>();
             for (String strRecord : strRecords) {
