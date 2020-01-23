@@ -43,12 +43,13 @@ import org.springframework.stereotype.Component;
 
 import com.graphqlio.gts.exceptions.GtsScopeEvaluationException;
 import com.graphqlio.gts.keyvaluestore.GtsKeyValueStore;
+import com.graphqlio.gts.resolver.GtsSubscriptionResolver;
 import com.graphqlio.gts.tracking.GtsConnection;
 import com.graphqlio.gts.tracking.GtsRecord;
-import com.graphqlio.gts.tracking.GtsRecord.GtsArityType;
-import com.graphqlio.gts.tracking.GtsRecord.GtsOperationType;
 import com.graphqlio.gts.tracking.GtsScope;
 import com.graphqlio.gts.tracking.GtsScopeState;
+import com.graphqlio.gts.tracking.GtsRecord.GtsArityType;
+import com.graphqlio.gts.tracking.GtsRecord.GtsOperationType;
 
 import graphql.GraphQLException;
 
@@ -56,8 +57,8 @@ import graphql.GraphQLException;
 /**
  * Class evaluating which scopes resp. query subscription are out of date once any mutation was performed
  * 
- * @author Michael SchÃ¤fer
- * @author Dr. Edgar MÃ¼ller
+ * @author Michael Schäfer
+ * @author Dr. Edgar Müller
  */
 
 
@@ -170,8 +171,6 @@ public class GtsEvaluation {
 
         String scopeId = scope.getScopeId();
         String connectionId = scope.getConnectionId();
-        System.out.println("connectionId = " + connectionId);
-        System.out.println("scopeId      = " + scopeId);
 
         /// Contains for a HashSet is O(1) compared to O(n) for a list, 
         /// therefore we use hashset to check if a scope is outdated        
@@ -183,7 +182,6 @@ public class GtsEvaluation {
                 			  r.op() == GtsOperationType.UPDATE  ||
                 			  r.op() == GtsOperationType.DELETE   ))
                 			  .collect(Collectors.toList());
-        System.out.println("recordsWrite = " + Arrays.toString(recordsWrite.toArray()));
 
         
         
@@ -206,11 +204,8 @@ public class GtsEvaluation {
             if (scope.getScopeState() == GtsScopeState.SUBSCRIBED) {
                 /* ...with subscriptions are remembered */
                 String[] rec = this.keyval.getRecords(connectionId, scopeId);
-                System.out.println("rec = " + Arrays.toString(rec));
                 List<String> records = scope.getStringifiedRecords();
-                System.out.println("records = " + Arrays.toString(records.toArray()));
                 String[] recNew = records.toArray(new String[records.size()]);
-                System.out.println("recNew = " + Arrays.toString(recNew));
 
                 if (rec == null || rec.length == 0 || !Arrays.equals(rec, recNew)) {
                     this.keyval.putRecords(connectionId, scopeId, recNew);
@@ -239,8 +234,6 @@ public class GtsEvaluation {
             	// coded analog RedisTemplate
                 String cid = GtsKeyValueStore.getConnectionId(key);
                 String sid = GtsKeyValueStore.getScopeId(key);
-                System.out.println("cid = " + cid);
-                System.out.println("sid = " + sid);
 
                 // CR 11072019 We should discuss the Algorithm
                 
@@ -251,35 +244,27 @@ public class GtsEvaluation {
                     sids.put(sid, cids);
                 }
             });
-            System.out.println("sids = " + sids);
 
             // ToDo: CR 11072019 We should discuss the Algorithm
             HashMap<String, Boolean> checkedRecords = new HashMap<>(); // ??? key serialized String of records???? !!!!
 
             sids.keySet().forEach(sid -> {
-                System.out.println("sid = " + sid);
                 /// check just once
-                if (outdatedSids.containsKey(sid)) {
-                    System.out.println("return");
+                if (outdatedSids.containsKey(sid))
                     return;
-                }
 
                 sids.get(sid).forEach(cid -> {
-                    System.out.println("cid = " + cid);
-
+                  
                     try {
                         boolean outdated = evaluateOutdatedSidPerCid(checkedRecords, recordsWrite, cid, sid);
-                        System.out.println("outdated = " + outdated);
                         if (outdated)
                             outdatedSids.put(sid, true);
                     }
                     catch (GtsScopeEvaluationException evalException) {
                     	/// do ignore here.                    	                    	
-                    	System.out.println("2: " + evalException.getMessage());
                     }
                     catch(GraphQLException e) {
                     	////  other exceptions??? 
-                    	System.out.println("1: " + e.getMessage());
                     }
                     
                 });
@@ -298,7 +283,6 @@ public class GtsEvaluation {
 
         // fetch scope records value
         String[] strRecords = this.keyval.getRecords(connectionId, scopeId);
-        System.out.println("strRecords = " + Arrays.toString(strRecords));
         boolean recordsChecked = false;
         String stringifiedRecords = null;
         /// ToDo: should be discussed with Ralf if "recordsChecked" this is really necessary and saves performance
@@ -311,7 +295,6 @@ public class GtsEvaluation {
             }
             stringifiedRecords = sb.toString();
             recordsChecked = checkedRecords.containsKey(stringifiedRecords);
-            System.out.println("recordsChecked = " + recordsChecked);
         }
         else {
         	logger.warn(String.format("Empty GtsRecord List found for connection id (%s) and scope id (%s)", connectionId, scopeId));
@@ -319,7 +302,7 @@ public class GtsEvaluation {
             throw new GtsScopeEvaluationException(String.format("Empty GtsRecord List found for connection id (%s) and scope id (%s)", connectionId, scopeId));
         }
 
-        if (true || !recordsChecked) {
+        if (!recordsChecked) {
             List<GtsRecord> recordsRead = new ArrayList<>();
             for (String strRecord : strRecords) {
             	GtsRecord record = GtsRecord.builder().stringified(strRecord).build();
