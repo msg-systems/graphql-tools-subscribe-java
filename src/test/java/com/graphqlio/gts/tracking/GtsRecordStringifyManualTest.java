@@ -31,15 +31,16 @@ import org.junit.jupiter.api.Test;
 
 import com.graphqlio.gts.tracking.GtsRecord.GtsArityType;
 import com.graphqlio.gts.tracking.GtsRecord.GtsOperationType;
+import com.graphqlio.gts.tracking.GtsRecord.GtsRecordBuilder;
 
 /**
- * class for testing record stringify regexp
+ * class for testing record stringify manual
  *
  * @author Michael Schäfer
  * @author Dr. Edgar Müller
  */
 
-public class TestGraphQLIORecordStringifyRegExp {
+public class GtsRecordStringifyManualTest {
 
 	final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger();
 
@@ -67,10 +68,10 @@ public class TestGraphQLIORecordStringifyRegExp {
 //		boolean bMatchesRegExp = GraphQLIORecord.matchesPredefinedPattern(strRecord);
 //		Assert.assertTrue(bMatchesRegExp);
 
-		GtsRecord recordFromString = GtsRecord.builder().stringified(strRecord).build();
+		GtsRecord recordFromStringManual = GtsRecord.builder().stringified(strRecord).build();
 
-		Assertions.assertTrue(recordFromString != null && record != null && recordFromString.equals(record));
+		Assertions
+				.assertTrue(recordFromStringManual != null && record != null && recordFromStringManual.equals(record));
 
 	}
-
 }

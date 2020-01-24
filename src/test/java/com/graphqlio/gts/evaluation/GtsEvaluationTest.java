@@ -47,7 +47,7 @@ import com.graphqlio.gts.tracking.GtsScopeState;
  */
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TestGraphQLIOEvaluation {
+public class GtsEvaluationTest {
 
 	final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger();
 

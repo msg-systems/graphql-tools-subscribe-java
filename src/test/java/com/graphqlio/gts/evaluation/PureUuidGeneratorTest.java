@@ -40,13 +40,9 @@ import com.graphqlio.gts.tracking.GtsScope;
  * @author Dr. Edgar Müller
  */
 
-public class TestPureUuidGenerator {
+public class PureUuidGeneratorTest {
 
-	public TestPureUuidGenerator() {
-		// TODO Auto-generated constructor stub
-	}
-
-	/// helper function
+	// helper function
 	private UUID isValidUUID(String uuidString) {
 		UUID resultUUID = null;
 		try {

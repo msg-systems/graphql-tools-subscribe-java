@@ -24,56 +24,72 @@
  * **  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * *
  ******************************************************************************/
-package com.graphqlio.gts.tracking;
+package com.graphqlio.gts.keyvaluestore;
+
+import java.io.IOException;
+import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import com.graphqlio.gts.tracking.GtsRecord.GtsArityType;
-import com.graphqlio.gts.tracking.GtsRecord.GtsOperationType;
-import com.graphqlio.gts.tracking.GtsRecord.GtsRecordBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 /**
- * class for testing record stringify manual
+ * Class used for testing the keyvaluestore
  *
  * @author Michael Schäfer
  * @author Dr. Edgar Müller
  */
 
-public class TestGraphQLIORecordStringifyManual {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class GtsKeyValueStoreTest {
 
-	final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger();
-
-//	// optional parameters 
-//	private String srcType = null; 
-//	private String srcId = null; 
-//	private String srcAttr = null; 
-//
-//	/// required Parameters
-//	private String op = ""; 	
-//	private String arity = "";
-//	private String dstType = "";
-//	private String dstIds[] = null;
-//	private String dstAttrs[] = null;
+	@Autowired
+	GtsKeyValueStore kvp;
 
 	@Test
-	public void testStringify() {
+	public void testKVP() throws IOException {
 
-		GtsRecordBuilder trb1 = new GtsRecordBuilder();
+		Set<String> allKeys = null;
 
-		GtsRecord record = GtsRecord.builder().op(GtsOperationType.READ).arity(GtsArityType.ONE).dstType("dstType")
-				.dstIds(new String[] { "dstId1", "dstId2" }).dstAttrs(new String[] { "dstAttr1", "dstAttr2" }).build();
+		kvp.start();
 
-		String strRecord = record.stringify();
-//		log.info("strRecord =" + strRecord);
-//		
-//		boolean bMatchesRegExp = GraphQLIORecord.matchesPredefinedPattern(strRecord);
-//		Assert.assertTrue(bMatchesRegExp);
+		/// reset kvp by deleting all keys
+		kvp.getAllKeys().forEach((key) -> kvp.getRedisTemplate().delete(key));
+		allKeys = kvp.getAllKeys();
+		Assertions.assertEquals(0, allKeys.size());
 
-		GtsRecord recordFromStringManual = GtsRecord.builder().stringified(strRecord).build();
+		//// create Keys
+		kvp.store("cid1", "sid1", "Value for <cid1,sid1>");
+		allKeys = kvp.getAllKeys();
+		kvp.store("cid1", "sid2", "Value for <cid1,sid2>");
+		allKeys = kvp.getAllKeys();
+		kvp.store("cid2", "sid3", "Value for <cid2,sid3>");
+		allKeys = kvp.getAllKeys();
+		kvp.store("cid2", "sid4", "Value for <cid2,sid4>");
+		allKeys = kvp.getAllKeys();
 
-		Assertions
-				.assertTrue(recordFromStringManual != null && record != null && recordFromStringManual.equals(record));
+		Assertions.assertTrue(kvp.hasKey("cid1", "sid1"));
+
+		String value = kvp.get("cid1", "sid1");
+		Assertions.assertTrue(value.equals("Value for <cid1,sid1>"));
+
+		allKeys = kvp.getAllKeys();
+		Assertions.assertEquals(4, allKeys.size());
+
+		Set<String> allKeysCid = kvp.getAllKeysForConnection("cid1");
+		Assertions.assertEquals(2, allKeysCid.size());
+
+		Set<String> allKeysSid = kvp.getAllKeysForScope("sid1");
+		Assertions.assertEquals(1, allKeysSid.size());
+
+		kvp.delete("cid1", "sid1");
+		kvp.delete("cid1", "sid2");
+		kvp.delete("cid2", "sid3");
+		kvp.delete("cid2", "sid4");
+
+		kvp.stop();
 
 	}
+
 }

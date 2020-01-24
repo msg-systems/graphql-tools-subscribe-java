@@ -24,72 +24,22 @@
  * **  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * *
  ******************************************************************************/
-package com.graphqlio.gts.keyvaluestore;
+package com.graphqlio.gts;
 
-import java.io.IOException;
-import java.util.Set;
-
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-/**
- * Class used for testing the keyvaluestore
- *
- * @author Michael Schäfer
- * @author Dr. Edgar Müller
- */
-
+@Tag("annotations")
+@Tag("junit5")
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TestRedisKVPServiceTest {
-
-	@Autowired
-	GtsKeyValueStore kvp;
+class GraphQLIOApplicationTest {
 
 	@Test
-	public void testKVP() throws IOException {
-
-		Set<String> allKeys = null;
-
-		kvp.start();
-
-		/// reset kvp by deleting all keys
-		kvp.getAllKeys().forEach((key) -> kvp.getRedisTemplate().delete(key));
-		allKeys = kvp.getAllKeys();
-		Assertions.assertEquals(0, allKeys.size());
-
-		//// create Keys
-		kvp.store("cid1", "sid1", "Value for <cid1,sid1>");
-		allKeys = kvp.getAllKeys();
-		kvp.store("cid1", "sid2", "Value for <cid1,sid2>");
-		allKeys = kvp.getAllKeys();
-		kvp.store("cid2", "sid3", "Value for <cid2,sid3>");
-		allKeys = kvp.getAllKeys();
-		kvp.store("cid2", "sid4", "Value for <cid2,sid4>");
-		allKeys = kvp.getAllKeys();
-
-		Assertions.assertTrue(kvp.hasKey("cid1", "sid1"));
-
-		String value = kvp.get("cid1", "sid1");
-		Assertions.assertTrue(value.equals("Value for <cid1,sid1>"));
-
-		allKeys = kvp.getAllKeys();
-		Assertions.assertEquals(4, allKeys.size());
-
-		Set<String> allKeysCid = kvp.getAllKeysForConnection("cid1");
-		Assertions.assertEquals(2, allKeysCid.size());
-
-		Set<String> allKeysSid = kvp.getAllKeysForScope("sid1");
-		Assertions.assertEquals(1, allKeysSid.size());
-
-		kvp.delete("cid1", "sid1");
-		kvp.delete("cid1", "sid2");
-		kvp.delete("cid2", "sid3");
-		kvp.delete("cid2", "sid4");
-
-		kvp.stop();
-
+	void contextLoads() {
 	}
 
 }
