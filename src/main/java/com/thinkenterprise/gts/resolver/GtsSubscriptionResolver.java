@@ -49,7 +49,7 @@ import graphql.schema.DataFetchingEnvironment;
  */
 
 public class GtsSubscriptionResolver implements GraphQLResolver<GtsSubscription> {
-
+	
 	private final Logger logger = LoggerFactory.getLogger(GtsSubscriptionResolver.class);
 		
     public UUID subscribe(GtsSubscription subscription, DataFetchingEnvironment env) {

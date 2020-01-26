@@ -1,6 +1,4 @@
-/*******************************************************************************
- * *
- * **  Design and Development by msg Applied Technology Research
+/* **  Design and Development by msg Applied Technology Research
  * **  Copyright (c) 2019-2020 msg systems ag (http://www.msg-systems.com/)
  * **  All Rights Reserved.
  * ** 
@@ -24,68 +22,26 @@
  * **  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * *
  ******************************************************************************/
-package com.thinkenterprise.gts.autoconfiguration;
+package com.thinkenterprise.gts.schema;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Value;
-/**
- * Class to provide graphqlio.server Configuration properties 
- *
- * @author Michael Schäfer
- */
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.stereotype.Component;
 
 /**
- * Class to provide graphqlio.server Configuration properties
+ * GraphQL IO Schema. Loading schema from resurces
  *
  * @author Michael Schäfer
+ * @author Dr. Edgar Müller
  */
+public class GtsGraphQLIOSchema {
 
-@Component
-@EnableConfigurationProperties
-@ConfigurationProperties(prefix = "graphqlio.toolssubscribe")
-public class GtsProperties {
+	private static String GtsGraphQLIOSchemaFilePath = "schema-graphqlio.graphql";
 
-	private static String GtsGraphQLIOSchemaFilePath = "schema-graphqlio.graphqls";
+	private GtsGraphQLIOSchema() {}
 
-	@Value("${spring.redis.port}")
-	private int redisPort;
-
-	@Value("${spring.redis.host}")
-	private String redisHost;
-
-	private boolean useEmbeddedRedis = false;
-
-	public int getRedisPort() {
-		return redisPort;
-	}
-
-	public void setRedisPort(int redisPort) {
-		this.redisPort = redisPort;
-	}
-
-	public String getRedisHost() {
-		return redisHost;
-	}
-
-	public void setRedisHost(String redisHost) {
-		this.redisHost = redisHost;
-	}
-
-	public void setUseEmbeddedRedis(boolean useEmbeddedRedis) {
-		this.useEmbeddedRedis = useEmbeddedRedis;
-	}
-
-	public boolean getUseEmbeddedRedis() {
-		return useEmbeddedRedis;
-	}
-
-	public Resource[] getSchemaResources() {
+	public static Resource[] getSchemaResources() {
 		Resource[] resources = null;
 
 		try {

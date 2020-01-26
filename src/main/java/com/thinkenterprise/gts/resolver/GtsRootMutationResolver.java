@@ -27,8 +27,6 @@
  
 package com.thinkenterprise.gts.resolver;
 
-import org.springframework.stereotype.Component;
-
 import com.coxautodev.graphql.tools.GraphQLMutationResolver;
 
 /**
@@ -39,12 +37,8 @@ import com.coxautodev.graphql.tools.GraphQLMutationResolver;
  */
 
 
-@Component
 public class GtsRootMutationResolver implements GraphQLMutationResolver {
 
-	public GtsRootMutationResolver() {
-	}
-	
     public GtsSubscription _Subscription() {
         return new GtsSubscription();
     } 

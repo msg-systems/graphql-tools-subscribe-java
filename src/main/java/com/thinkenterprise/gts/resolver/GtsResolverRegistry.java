@@ -1,6 +1,4 @@
-/*******************************************************************************
- * *
- * **  Design and Development by msg Applied Technology Research
+/* **  Design and Development by msg Applied Technology Research
  * **  Copyright (c) 2019-2020 msg systems ag (http://www.msg-systems.com/)
  * **  All Rights Reserved.
  * ** 
@@ -24,40 +22,39 @@
  * **  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * *
  ******************************************************************************/
-package com.thinkenterprise.gts.autoconfiguration;
+ 
+ package com.thinkenterprise.gts.resolver;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.thinkenterprise.gts.resolver.GtsSubscriptionResolver;
+import com.coxautodev.graphql.tools.GraphQLResolver;
+
+
 
 /**
- * Class to automatically configure the beans for the GraphQL IO Server library based on conditions 
- * and to configure processing WebSocket requests
- *
+ * GraphQL IO Resolver Registry. 
+ * Containing list of all resolvers
+ * 
  * @author Michael Schäfer
  * @author Dr. Edgar Müller
  */
+public class GtsResolverRegistry {
 
-@Configuration
-@EnableConfigurationProperties(GtsAutoConfiguration.class)
-@ConfigurationProperties(prefix = "graphqlio.toolssubscribe")
-public class GtsAutoConfiguration {
-
+	static {		
+		resolvers = new ArrayList<>();
+		registerGraphQLResolver(new GtsRootQueryResolver());
+		registerGraphQLResolver(new GtsRootMutationResolver());
+		registerGraphQLResolver(new GtsSubscriptionResolver());
+	}
 	
-	@Autowired
-	private GtsProperties gtsProperties;
+	private static List<GraphQLResolver<?>> resolvers;
 	
 	
-    @Bean 
-    @ConditionalOnMissingBean
-    public GtsSubscriptionResolver subscriptionResolver() {
-    	return new GtsSubscriptionResolver();
-    }
+	public static void registerGraphQLResolver( GraphQLResolver resolver) {
+		resolvers.add(resolver);
+	}
 
-
+	public static List<GraphQLResolver<?>> getResolvers() { return resolvers; }
+	
 }

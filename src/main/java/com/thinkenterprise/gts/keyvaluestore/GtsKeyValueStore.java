@@ -34,8 +34,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
-import com.thinkenterprise.gts.autoconfiguration.GtsProperties;
-
 
 /**
  * Component responsible to save records in Redis Store
@@ -49,10 +47,9 @@ import com.thinkenterprise.gts.autoconfiguration.GtsProperties;
 public class GtsKeyValueStore {
 
 	@Autowired
-	private GtsProperties gtsProperties;
-	
-	@Autowired
 	GtsGraphQLEmbeddedRedisService	gtsEmbeddedService;
+	private boolean useEmbeddedRedis = false;
+	private int redisPort;
 		
 	RedisTemplate<String, String> redisTemplate;
 	
@@ -60,10 +57,18 @@ public class GtsKeyValueStore {
 		this.redisTemplate = redisTemplate;
 	}
 
+	public void setUseEmbeddedRedis( boolean useEmbeddedRedis) {
+		this.useEmbeddedRedis = useEmbeddedRedis;		
+	}
+	
+	public void setRedisPort( int redisPort) {
+		this.redisPort = redisPort;		
+	}
+	
 	public void start() throws IOException {
 		
-		if (gtsProperties.getUseEmbeddedRedis()) {
-			gtsEmbeddedService.start();
+		if (this.useEmbeddedRedis) {
+			gtsEmbeddedService.start(this.redisPort);
 		}
 		
 		deleteAllKeys();
@@ -71,7 +76,7 @@ public class GtsKeyValueStore {
 	}
 	
 	public void stop() {
-		if (gtsProperties.getUseEmbeddedRedis()) {
+		if (this.useEmbeddedRedis) {
 			gtsEmbeddedService.stop();
 		}
 		

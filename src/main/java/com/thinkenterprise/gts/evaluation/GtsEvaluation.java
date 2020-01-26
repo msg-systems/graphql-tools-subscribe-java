@@ -39,11 +39,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.thinkenterprise.gts.exceptions.GtsScopeEvaluationException;
 import com.thinkenterprise.gts.keyvaluestore.GtsKeyValueStore;
-import com.thinkenterprise.gts.resolver.GtsSubscriptionResolver;
 import com.thinkenterprise.gts.tracking.GtsConnection;
 import com.thinkenterprise.gts.tracking.GtsRecord;
 import com.thinkenterprise.gts.tracking.GtsScope;
@@ -65,15 +63,20 @@ import graphql.GraphQLException;
 /**
  * GtsEvaluation
  */
-@Component
 public class GtsEvaluation {
 
+	
 	private final Logger logger = LoggerFactory.getLogger(GtsEvaluation.class);
 	
 	
-    @Autowired
     private GtsKeyValueStore keyval;
 
+    
+    public void setGtsKeyValueStore(GtsKeyValueStore keyval ) {
+    	this.keyval = keyval;
+    }
+    
+    
     private static boolean outdated(List<GtsRecord> newRecords, List<GtsRecord> oldRecords) {
 
         // iterate over all new and old records...

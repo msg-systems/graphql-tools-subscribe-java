@@ -28,10 +28,7 @@ package com.thinkenterprise.gts.keyvaluestore;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.thinkenterprise.gts.autoconfiguration.GtsProperties;
 
 import redis.embedded.RedisServer;
 
@@ -51,18 +48,15 @@ public class GtsGraphQLEmbeddedRedisService {
 
 	final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger();
 
-	@Autowired
-	private GtsProperties gtsProperties;
-
 	private RedisServer embeddedRedisServer;
-
-	public void start() throws IOException {
+	
+	public void start(int port) throws IOException {
 
 		log.info("Starting embedded RedisServer.");
 
 		// this.embeddedRedisServer = new RedisServer(redisProperties.getRedisPort());
 
-		this.embeddedRedisServer = RedisServer.builder().port(gtsProperties.getRedisPort())
+		this.embeddedRedisServer = RedisServer.builder().port(port)
 				// .redisExecProvider(customRedisExec) //com.github.kstyrc (not
 				// com.orange.redis-embedded)
 				.setting("maxmemory 128M") // maxheap 128M
