@@ -57,7 +57,7 @@ public class GtsRecordStringifyManualTest {
 //	private String dstAttrs[] = null;
 
 	@Test
-	public void testStringify() {
+	public void whenStringifyAndStringifiedAreCalledThenOutputEqualsInput() {
 
 		GtsRecord record = GtsRecord.builder().op(GtsOperationType.READ).arity(GtsArityType.ONE).dstType("dstType")
 				.dstIds(new String[] { "dstId1", "dstId2" }).dstAttrs(new String[] { "dstAttr1", "dstAttr2" }).build();

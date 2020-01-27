@@ -48,7 +48,7 @@ public class GtsKeyValueStoreTest {
 	GtsKeyValueStore kvp;
 
 	@Test
-	public void testKVP() throws IOException {
+	public void whenKVPGetsValuesStoredThenOutputIsCorrect() throws IOException {
 
 		Set<String> allKeys = null;
 

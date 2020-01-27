@@ -56,7 +56,7 @@ public class PureUuidGeneratorTest {
 	final String strRecordQuerySid1 = "read(many)->item#{id1,id2,id3,id4,id5}.{id,name,address,email}";
 
 	@Test
-	public void testCreateScopeandScopeId() {
+	public void whenGetScopeIdIsCalledThenOutputIsCorrect() {
 
 		GtsScope scope = GtsScope.builder().withQuery(strRecordQuerySid1).build();
 
