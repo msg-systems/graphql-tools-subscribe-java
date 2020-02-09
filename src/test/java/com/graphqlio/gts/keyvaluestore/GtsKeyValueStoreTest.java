@@ -44,18 +44,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class GtsKeyValueStoreTest {
 
-	@Autowired
-	GtsKeyValueStore kvp;
+	GtsKeyValueStore kvp = new GtsKeyValueStore();
 
 	@Test
 	public void whenKVPGetsValuesStoredThenOutputIsCorrect() throws IOException {
 
 		Set<String> allKeys = null;
 
-		kvp.start();
-
 		/// reset kvp by deleting all keys
-		kvp.getAllKeys().forEach((key) -> kvp.getRedisTemplate().delete(key));
+		kvp.deleteAllKeys();
 		allKeys = kvp.getAllKeys();
 		Assertions.assertEquals(0, allKeys.size());
 
@@ -87,8 +84,6 @@ public class GtsKeyValueStoreTest {
 		kvp.delete("cid1", "sid2");
 		kvp.delete("cid2", "sid3");
 		kvp.delete("cid2", "sid4");
-
-		kvp.stop();
 
 	}
 

@@ -26,8 +26,6 @@
  ******************************************************************************/
 package com.graphqlio.gts.resolver;
 
-import org.springframework.stereotype.Component;
-
 import com.coxautodev.graphql.tools.GraphQLQueryResolver;
 
 /**
@@ -37,7 +35,6 @@ import com.coxautodev.graphql.tools.GraphQLQueryResolver;
  * @author Dr. Edgar Müller
  */
 
-@Component
 public class GtsRootQueryResolver implements GraphQLQueryResolver {
 
 	

@@ -30,8 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.graphqlio.gts.actuator.GtsCounter;
-import com.graphqlio.gts.actuator.GtsCounterNames;
 import com.graphqlio.gts.tracking.GtsConnection.Builder;
 import com.graphqlio.uuid.domain.NsUrl;
 import com.graphqlio.uuid.domain.TypeFormat;
@@ -53,7 +51,6 @@ public class GtsScope {
     private String variables;
     private GtsScopeState scopeState;
     private List<GtsRecord> records = new ArrayList<>();
-	private GtsCounter gtsCounter = null;
 
 
     public GtsScope(Builder builder) {
@@ -62,7 +59,6 @@ public class GtsScope {
         this.scopeState=builder.scopeState;
         this.query=builder.query;
         this.variables=builder.variables;
-        this.gtsCounter = builder.gtsCounter;        
     }
 
     public String getScopeId() {
@@ -86,8 +82,6 @@ public class GtsScope {
     }
     
     public void addRecord(GtsRecord record) {
-    	if (gtsCounter != null)
-    		this.gtsCounter.modifyCounter(GtsCounterNames.RECORDS, 1L);
         this.records.add(record);
     }
 
@@ -96,18 +90,7 @@ public class GtsScope {
     	this.records.forEach(r -> stringifiedRecords.add(r.stringify()));
     	return stringifiedRecords;
     }
-    
-    public void onDestroy() {
-    	
-    	if (gtsCounter != null) {
-    		gtsCounter.modifyCounter(GtsCounterNames.SCOPES, -1L);;
-    		gtsCounter.modifyCounter(GtsCounterNames.RECORDS, -this.records.size());
-    		
-    	}
-    }
-    
-    
-    
+        
     public static Builder builder() {
 		return new Builder();
 	}
@@ -119,7 +102,6 @@ public class GtsScope {
         private GtsScopeState scopeState = GtsScopeState.UNSUBSCRIBED;
         private String query;
         private String variables;
-        private GtsCounter gtsCounter = null;     
              
 		private Builder() {
         }
@@ -147,12 +129,7 @@ public class GtsScope {
         	this.scopeState = scopeState;
         	return this;
         }
-        
-		public Builder withGtsCounter(GtsCounter gtsCounter) {
-			this.gtsCounter = gtsCounter;
-			return this;
-		}
-        
+                
 		public GtsScope build() {
             // Build Process 
 			
@@ -173,9 +150,6 @@ public class GtsScope {
 	            	this.scopeId = UUID.randomUUID().toString();
 	            	            
 			}
-            if (this.gtsCounter != null) 
-            	this.gtsCounter.modifyCounter(GtsCounterNames.SCOPES, 1L);
-
             return new GtsScope(this);
 		} 
 		

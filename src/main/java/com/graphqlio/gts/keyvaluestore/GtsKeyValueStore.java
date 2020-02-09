@@ -26,106 +26,71 @@
  ******************************************************************************/
 package com.graphqlio.gts.keyvaluestore;
 
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.stereotype.Component;
-
-import com.graphqlio.gts.autoconfiguration.GtsProperties;
-
+import java.util.stream.Collectors;
 
 /**
- * Component responsible to save records in Redis Store
+ * Class responsible for providing fast access to records used in (connection-)scopes
  *
  * @author Michael Schäfer
  * @author Dr. Edgar Müller
  */
 
 
-@Component
 public class GtsKeyValueStore {
 
-	@Autowired
-	private GtsProperties gtsProperties;
-	
-	@Autowired
-	GtsGraphQLEmbeddedRedisService	gtsEmbeddedService;
+	HashMap<String, String> kvp = new HashMap<>();	
 		
-	RedisTemplate<String, String> redisTemplate;
-	
-	public GtsKeyValueStore( RedisTemplate<String, String> redisTemplate) {
-		this.redisTemplate = redisTemplate;
-	}
-
-	public void start() throws IOException {
-		
-		if (gtsProperties.getUseEmbeddedRedis()) {
-			gtsEmbeddedService.start();
-		}
-		
-		deleteAllKeys();
-				
-	}
-	
-	public void stop() {
-		if (gtsProperties.getUseEmbeddedRedis()) {
-			gtsEmbeddedService.stop();
-		}
-		
-	}
-	
-	
-	public RedisTemplate<String, String> getRedisTemplate() {return redisTemplate; }
-	
 	/// key pattern "cid:*:sid:*
 	/// value: string, e.g. serialized data structure
-
 	private String generateKey(String connectionId, String scopeId) {
 		return "cid:" + connectionId+ ":sid:" +scopeId;
 	}
 	
 	public void store(String connectionId, String scopeId, String value ) {
-        ValueOperations<String, String> values = redisTemplate.opsForValue();
-        values.set(generateKey(connectionId, scopeId), value);		
+        kvp.put(generateKey(connectionId, scopeId), value);		
 	}
 
 	public String get (String connectionId, String scopeId) {
-        ValueOperations<String, String> values = redisTemplate.opsForValue();
-        return values.get(generateKey(connectionId, scopeId));		
+        return kvp.get(generateKey(connectionId, scopeId));		
 	}
 	
 	public boolean delete (String connectionId, String scopeId) {
-    	return redisTemplate.delete(generateKey(connectionId, scopeId));
+    	return kvp.remove(generateKey(connectionId, scopeId)) != null;
 	}
 
-	public Long deleteAllKeysForConnection(String connectionId) {
-		return redisTemplate.delete(getAllKeysForConnection(connectionId));
+	public void deleteAllKeysForConnection(String connectionId) {
+		Set<String> connectionKeys = getAllKeysForConnection(connectionId);
+		connectionKeys.forEach(key -> kvp.remove(key));
 	}
 	
 	public boolean hasKey (String connectionId, String scopeId) {
-    	return redisTemplate.hasKey(generateKey(connectionId, scopeId));
+    	return kvp.containsKey(generateKey(connectionId, scopeId));
 	}
 
 	public Set<String> getAllKeys()  {
-    	return redisTemplate.keys("cid:*:sid:*");
+		return kvp.keySet().stream()
+				.filter(key -> (key.indexOf("cid:") > -1))
+				.filter(key -> (key.indexOf("sid:") > -1))
+				.collect(Collectors.toSet());
 	}
 
 	/// delete all keys; e.g. "cleanup" at the very beginning when server starts
 	public void deleteAllKeys() { 
-		redisTemplate.delete(getAllKeys());
+		kvp.clear();
 	}
 	
 	public Set<String> getAllKeysForConnection(String connectionId)  {
-		String keyPattern = "cid:" + connectionId + ":sid:*";
-    	return redisTemplate.keys(keyPattern);
+		return kvp.keySet().stream()
+					.filter(key -> (key.indexOf("cid:" + connectionId) > -1))
+					.collect(Collectors.toSet());
 	}
 	
 	public Set<String> getAllKeysForScope(String scopeId)  {
-		String keyPattern = "cid:*:sid:" + scopeId;
-    	return redisTemplate.keys(keyPattern);
+		return kvp.keySet().stream()
+				.filter(key -> (key.indexOf("sid:" + scopeId) > -1))
+				.collect(Collectors.toSet());
 	}
 	
 	

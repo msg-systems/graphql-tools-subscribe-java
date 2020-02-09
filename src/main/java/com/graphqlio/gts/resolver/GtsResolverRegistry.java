@@ -1,6 +1,4 @@
-/*******************************************************************************
- * *
- * **  Design and Development by msg Applied Technology Research
+/* **  Design and Development by msg Applied Technology Research
  * **  Copyright (c) 2019-2020 msg systems ag (http://www.msg-systems.com/)
  * **  All Rights Reserved.
  * ** 
@@ -24,22 +22,38 @@
  * **  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * *
  ******************************************************************************/
-package com.graphqlio.gts.actuator;
+package com.graphqlio.gts.resolver;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.coxautodev.graphql.tools.GraphQLResolver;
 
 /**
- * Interface providing counter information for Connections, Scopes and Records 
- *
+ * GraphQL IO Resolver Registry. 
+ * Containing list of all resolvers
+ * 
  * @author Michael Schäfer
  * @author Dr. Edgar Müller
  */
-
-public interface GtsCounter {
+public class GtsResolverRegistry {
 	
-	public GtsCounterNames[] getCounters();
+	private GtsResolverRegistry() {};
 
-	public void registerCounterNotification( GtsCounterNotification counterNotification);
+	static {		
+		resolvers = new ArrayList<>();
+		registerGraphQLResolver(new GtsRootQueryResolver());
+		registerGraphQLResolver(new GtsRootMutationResolver());
+		registerGraphQLResolver(new GtsSubscriptionResolver());
+	}
 	
-	/// value byNumber   +/- 
-	public void modifyCounter(GtsCounterNames name, long byNumber);
+	private static List<GraphQLResolver<?>> resolvers;
+	
+	
+	public static void registerGraphQLResolver( GraphQLResolver resolver) {
+		resolvers.add(resolver);
+	}
+
+	public static List<GraphQLResolver<?>> getResolvers() { return resolvers; }
 	
 }

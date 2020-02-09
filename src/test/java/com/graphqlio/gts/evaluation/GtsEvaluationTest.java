@@ -51,11 +51,8 @@ public class GtsEvaluationTest {
 
 	final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger();
 
-	@Autowired
-	private GtsKeyValueStore keyval;
-
-	@Autowired
-	GtsEvaluation graphQLIOEvaluation;
+	private GtsKeyValueStore keyval = new GtsKeyValueStore();
+	private GtsEvaluation graphQLIOEvaluation = new GtsEvaluation(keyval) ;
 
 //// test data	
 	final String strRecordQuerySid1 = "read(many)->item#{id1,id2,id3,id4,id5}.{id,name,address,email}";
@@ -104,8 +101,6 @@ public class GtsEvaluationTest {
 		 * [*#{*}.*->]update/delete(*)->Item#{1}.{name}
 		 */
 
-		keyval.start();
-
 		List<String> outdatedSids = null;
 
 		/// need to add Query Records !!! withQuery adds query sent by client.
@@ -133,8 +128,6 @@ public class GtsEvaluationTest {
 		Assertions.assertTrue(outdatedSids.size() == 1);
 		Assertions.assertTrue(outdatedSids.contains("Sid1"));
 
-		keyval.stop();
-
 	}
 
 	@Test
@@ -145,8 +138,6 @@ public class GtsEvaluationTest {
 		 * Card#1.items->read(*)->Item#{2}.{id,name} new/mutation:
 		 * [*#{*}.*->]update(*)->Card#{1}.{items}
 		 */
-
-		keyval.start();
 
 		List<String> outdatedSids = null;
 
@@ -170,8 +161,6 @@ public class GtsEvaluationTest {
 		Assertions.assertTrue(outdatedSids.size() == 1);
 		Assertions.assertTrue(outdatedSids.contains("Sid3"));
 
-		keyval.stop();
-
 	}
 
 	@Test
@@ -184,8 +173,6 @@ public class GtsEvaluationTest {
 		 * 
 		 * "Read:Many", "Delete:Attr=*
 		 */
-
-		keyval.start();
 
 		List<String> outdatedSids = null;
 
@@ -216,14 +203,10 @@ public class GtsEvaluationTest {
 		Assertions.assertTrue(outdatedSids.contains("Sid1"));
 		Assertions.assertTrue(outdatedSids.contains("Sid2"));
 
-		keyval.stop();
-
 	}
 
 	@Test
 	public void testMutationUpdateItemOutdatesScopeUseCase3() throws IOException {
-
-		keyval.start();
 
 		/*
 		 * CASE 3: modified entity list (of direct query) old/query
@@ -262,8 +245,6 @@ public class GtsEvaluationTest {
 		outdatedSids = graphQLIOEvaluation.evaluateOutdatedSids(scopeSid2Cid1);
 		Assertions.assertTrue(outdatedSids.size() == 1);
 		Assertions.assertTrue(outdatedSids.contains("Sid1"));
-
-		keyval.stop();
 
 	}
 

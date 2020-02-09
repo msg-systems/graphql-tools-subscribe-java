@@ -29,11 +29,7 @@ package com.graphqlio.gts.tracking;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.WebSocketSession;
-
-import com.graphqlio.gts.actuator.GtsCounter;
-import com.graphqlio.gts.actuator.GtsCounterNames;
 
 /**
  * WebSocketConnection
@@ -43,8 +39,6 @@ import com.graphqlio.gts.actuator.GtsCounterNames;
 
 public class GtsConnection {
 	
-	private GtsCounter gtsCounter = null;
-	
     private String connectionId;
     
     //// don't need a CopyOnWriteArrayList as scopes are not removed from connection!!!
@@ -53,7 +47,6 @@ public class GtsConnection {
 
     public GtsConnection(Builder builder) {
         this.connectionId=builder.connectionId;
-        this.gtsCounter = builder.gtsCounter;
     }
     
     public String getConnectionId() {
@@ -68,15 +61,8 @@ public class GtsConnection {
         return this.scopes;
     }
    
-    public void onClose () {        
-    	
-        /// "destroy" all scopes for connection if connection is closed
-    	this.scopes.forEach(scope -> scope.onDestroy()); 
-
+    public void onClose () {            	
     	this.scopes.clear();  
-        if (gtsCounter != null) {
-            gtsCounter.modifyCounter(GtsCounterNames.SCOPES, 1L);        	
-        }
     }
     
     public GtsScope getScopeById(String scopeId) {
@@ -98,7 +84,6 @@ public class GtsConnection {
 
         private String connectionId;
         private WebSocketSession session;
-        private GtsCounter gtsCounter = null;     
 
         private Builder() {
         }
@@ -108,15 +93,9 @@ public class GtsConnection {
 			return this;
         }
 		
-		public Builder withGtsCounter(GtsCounter gtsCounter) {
-			this.gtsCounter = gtsCounter;
-			return this;
-		}
         
 		public GtsConnection build() {
             this.connectionId=session.getId();
-            if (this.gtsCounter != null) 
-            	this.gtsCounter.modifyCounter(GtsCounterNames.CONNECTIONS, 1L);;
             return new GtsConnection(this);
 		} 
 
