@@ -51,6 +51,10 @@ public class GtsResolverRegistry {
     resolvers.add(resolver);
   }
 
+  public static void deregisterGraphQLResolver(GraphQLResolver resolver) {
+    resolvers.remove(resolver);
+  }
+
   public static List<GraphQLResolver<?>> getResolvers() {
     return resolvers;
   }
