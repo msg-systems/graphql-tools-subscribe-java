@@ -25,6 +25,7 @@ package com.graphqlio.gts.context;
 
 import org.springframework.web.socket.WebSocketSession;
 
+import com.graphqlio.gts.evaluation.GtsEvaluation;
 import com.graphqlio.gts.tracking.GtsScope;
 
 import graphql.schema.GraphQLSchema;
@@ -40,11 +41,13 @@ public class GtsContext {
   private WebSocketSession webSocketSession;
   private GraphQLSchema graphQLSchema;
   private GtsScope scope;
-
+  private GtsEvaluation gtsEvaluation;
+  
   private GtsContext(Builder builder) {
     this.webSocketSession = builder.webSocketSession;
     this.graphQLSchema = builder.graphQLSchema;
     this.scope = builder.scope;
+    this.gtsEvaluation = builder.gtsEvaluation;
   }
 
   public GtsScope getScope() {
@@ -63,11 +66,17 @@ public class GtsContext {
     return new Builder();
   }
 
+  public GtsEvaluation getGtsEvaluation() {
+    return this.gtsEvaluation;
+  }
+
+  
   public static final class Builder {
 
     private WebSocketSession webSocketSession;
     private GraphQLSchema graphQLSchema;
     private GtsScope scope;
+    private GtsEvaluation gtsEvaluation;
 
     private Builder() {}
 
@@ -84,6 +93,11 @@ public class GtsContext {
     public Builder scope(GtsScope scope) {
       this.scope = scope;
       return this;
+    }
+  
+    public Builder gtsEvaluation(GtsEvaluation gtsEvaluation) {
+    	this.gtsEvaluation = gtsEvaluation;
+    	return this;
     }
 
     public GtsContext build() {

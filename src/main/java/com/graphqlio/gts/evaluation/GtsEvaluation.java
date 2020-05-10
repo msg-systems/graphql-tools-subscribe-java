@@ -62,6 +62,10 @@ public class GtsEvaluation {
 
   private GtsKeyValueStore keyval;
 
+  // keep list of outdated scopes in memory
+  private Map<String, Set<String>> sidsPerCid = new HashMap<>();
+  
+  
   public GtsEvaluation(GtsKeyValueStore keyval) {
     this.keyval = keyval;
   }
@@ -329,12 +333,14 @@ public class GtsEvaluation {
 
     if (connections == null) return null;
 
-    Map<String, Set<String>> sidsPerCid = new HashMap<>();
     connections.forEach(
         (conn) -> {
           if (conn == null) return;
           String cid = conn.getConnectionId();
-
+          if (cid != null ) {
+        	this.sidsPerCid.remove(cid);
+          }
+          
           conn.scopes()
               .forEach(
                   (scope) -> {
@@ -344,12 +350,12 @@ public class GtsEvaluation {
 
                     if (scope.getScopeState() == GtsScopeState.SUBSCRIBED) {
                       if (sids.contains(sid)) {
-                        if (!sidsPerCid.containsKey(cid)) {
+                        if (!this.sidsPerCid.containsKey(cid)) {
                           Set<String> sidSet = new HashSet<>();
                           sidSet.add(sid);
-                          sidsPerCid.put(cid, sidSet);
+                          this.sidsPerCid.put(cid, sidSet);
                         } else {
-                          sidsPerCid.get(cid).add(sid);
+                          this.sidsPerCid.get(cid).add(sid);
                         }
                       }
                     } else if (scope.getScopeState() == GtsScopeState.PAUSED) {
@@ -361,11 +367,27 @@ public class GtsEvaluation {
                   });
         });
 
-    return sidsPerCid;
+    return this.sidsPerCid;
   }
+  
+  /**
+   * Return list of last calculated outdated scopes for connection
+   *
+   * @author Michael Schäfer
+   * @author Dr. Edgar Müller
+   */
 
+  public Set<String> readOutdatedScopes4ConnectionID(String cid) {
+    if (cid != null) {
+      return this.sidsPerCid.get(cid);
+    } else {
+      return null;
+    }
+  }
+  
   ///   remove all scopes for connection if connection is closed
-  public void onCloseConnection(String connectionId) {
-    this.keyval.deleteAllKeysForConnection(connectionId);
+  public void onCloseConnection(String cid) {
+    this.keyval.deleteAllKeysForConnection(cid);
+    this.sidsPerCid.remove(cid);
   }
 }

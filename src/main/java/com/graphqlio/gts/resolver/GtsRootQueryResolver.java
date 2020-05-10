@@ -23,19 +23,65 @@
  */
 package com.graphqlio.gts.resolver;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.coxautodev.graphql.tools.GraphQLQueryResolver;
+import com.graphqlio.gts.context.GtsContext;
+import com.graphqlio.gts.evaluation.GtsEvaluation;
+import com.graphqlio.gts.tracking.GtsScope;
+import com.graphqlio.gts.tracking.GtsScopeState;
+
+
+import graphql.schema.DataFetchingEnvironment;
+import jdk.internal.org.jline.utils.Log;
 
 /**
- * GraphQL IO Root Query Resolver
+ * GraphQL IO Root Query Resolver.
  *
  * @author Michael Schäfer
  * @author Dr. Edgar Müller
  */
 public class GtsRootQueryResolver implements GraphQLQueryResolver {
 
-  public GtsRootQueryResolver() {}
+  private final Logger logger = LoggerFactory.getLogger(GtsRootQueryResolver.class);
 
   public GtsSubscription _Subscription() {
     return new GtsSubscription();
   }
+  
+
+  /**
+   * List of outdated Scopes for this connection.
+   *
+   * @author Michael Schäfer
+   * @author Dr. Edgar Müller
+   */
+  public List<String> outdated(DataFetchingEnvironment env) {
+    List<String> sids = new ArrayList<>();
+    GtsContext context = env.getContext();
+    if (context != null) {
+      GtsScope scope = context.getScope();
+      GtsEvaluation gtsEvaluation = context.getGtsEvaluation();
+      if (gtsEvaluation != null) {
+        List<String> sidArray = new ArrayList<>();
+        Set<String> sidSet = gtsEvaluation.readOutdatedScopes4ConnectionID(scope.getConnectionId());
+        if (sidSet != null && !sidSet.isEmpty()) {
+          sidArray.addAll(sidSet);
+        }
+        logger.info("GtsRootQueryResolver::outdated Scopes for Connection " 
+            + scope.getConnectionId() 
+            + ": " 
+            + sidArray);
+        return sidArray;
+      }
+    }
+    return sids;
+  }
+  
 }

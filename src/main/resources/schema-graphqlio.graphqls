@@ -3,6 +3,7 @@
 
 extend type Query { 
 	_Subscription: GraphQLIOSubscription
+	outdated: [String]
 }
 extend type Mutation { 
 	_Subscription: GraphQLIOSubscription
