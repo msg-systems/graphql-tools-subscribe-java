@@ -200,9 +200,9 @@
 	</distributionManagement>
 
 	<scm>
-		<connection>scm:git:git@github.com:Thinkenterprise/graphql-tools-subscribe-java.git</connection>
-		<developerConnection>scm:git:git@github.com:Thinkenterprise/graphql-tools-subscribe-java.git</developerConnection>
-		<url>https://github.com/Thinkenterprise/graphql-tools-subscribe-java</url>
+		<connection>scm:git:git@github.com:msg-systems/graphql-tools-subscribe-java.git</connection>
+		<developerConnection>scm:git:git@github.com:msg-systems/graphql-tools-subscribe-java.git</developerConnection>
+		<url>https://github.com/msg-systems/graphql-tools-subscribe-java</url>
 	</scm>
 
 </project>
